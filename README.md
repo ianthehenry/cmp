@@ -7,18 +7,12 @@ Instead of `(import cmp)`, you can use `(use cmp/import)` to bring the functions
 This will let you write code like `(cmp/sorted [{:x 1} {:x 2}] (by :x desc))`.
 
 ```janet
-(then & comparators)
-```
-
-Returns a comparator that tries each comparator in order until one returns non-zero.
-
-```janet
 (by f &opt comparator)
 ```
 
 `comparator` defaults to `cmp`. You can nest `by` to compare nested keys: `(by :a (by :b))` compares structs like `{:a {:b 0}}`.
 
-If `f` is a keyword, it acts as a getter, not a method name. So `(by :x)` is the same as `(by |(in $ :x))`.
+If `f` is a keyword, it acts as a getter, not a method name. So `(by :x)` is the same as `(by |(in $ :x))`, not the same as `(by |(:x $))`.
 
 ```janet
 (desc comparator)
@@ -34,7 +28,13 @@ If you pass one argument to `(desc)`, it will assume it's a comparator, and retu
 
 Lifts a comparator into a comparator over iterable values -- tuples, arrays, custom abstract types -- by comparing each element in turn until it finds a mismatch. If one iterable is a prefix of the other (according to the given comparator), the shorter iterable is ordered before the longer iterable.
 
-Note that Janet's built-in `cmp` already works over tuples and arrays, but this is useful for lifting a custom comparator, e.g. `(cmp/each (by :x))`, or for comparing heterogeneous types -- Janet's built-in `cmp` will sort all arrays before all tuples, for example, and does not work with fibers or abstract types.
+Note that Janet's built-in `cmp` already works over tuples and arrays, but this is useful for lifting a custom comparator, e.g. `(cmp/each (by :x))`, or for comparing heterogeneous types: Janet's built-in `cmp` will sort all arrays before all tuples, for example, and does not work with fibers or abstract types.
+
+```janet
+(then & comparators)
+```
+
+Returns a comparator that tries each comparator in order until one returns non-zero.
 
 ```janet
 (sort list & comparators)
