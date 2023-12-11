@@ -24,7 +24,9 @@ If `f` is a keyword, it acts as a getter, not a method name. So `(by :x)` is the
 (desc comparator)
 ```
 
-Returns a comparator that inverts the other comparator.
+Returns a comparator that inverts the other comparator. Janet's default `cmp` sorts numbers in ascending order; you can use `desc` to get a descending sort.
+
+If you pass one argument to `(desc)`, it will assume it's a comparator, and return a reversed version of that comparator. If you pass two arguments to `desc`, it will act as a comparator in its own right that reverses Janet's native `cmp`. This allows you to write `(by :x desc)` instead of `(by :x (desc cmp))` or `(desc (by :x))`.
 
 ```janet
 (list comparator)

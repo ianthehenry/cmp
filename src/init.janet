@@ -25,8 +25,19 @@
 (defn desc [comparator]
   (fn [a b] (* -1 (comparator a b))))
 
-(test (cmp 1 2) -1)
-(test ((desc cmp) 1 2) 1)
+(defn desc [& args]
+  (case (length args)
+    0 (desc cmp)
+    1 (let [comparator (args 0)] (fn [a b] (* -1 (comparator a b))))
+    2 (* -1 (cmp (args 0) (args 1)))
+    (error "too many arguments to (desc))")))
+
+(deftest "with one argument, desc reverses a comparator"
+  (test ((desc cmp) 1 2) 1))
+
+(deftest "with two arguments, desc asks as a comparator in its own right"
+  (test (cmp 1 2) -1)
+  (test (desc 1 2) 1))
 
 # lifts a comparator to a comparator that acts over lists.
 # shorter lists compare before longer lists if the short
@@ -79,3 +90,8 @@
   @[{:a {:x 1} :b -1}
     {:a {:x 1} :b 1}
     {:a {:x 2} :b 0}])
+
+(deftest "descending comparators"
+  (test (sorted [2 1 3] desc) @[3 2 1])
+  (test (sorted [{:a 1 :b 1} {:a 2 :b 0} {:a 1 :b -1}] (by :a desc) (desc (by :b)))
+    @[{:a 2 :b 0} {:a 1 :b 1} {:a 1 :b -1}]))
