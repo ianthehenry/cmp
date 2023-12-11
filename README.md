@@ -4,7 +4,7 @@ Comparator helpers for Janet.
 
 Instead of `(import cmp)`, you can use `(use cmp/import)` to bring the functions `by` and `desc` into scope unprefixed, as well as all of the other functions prefixed with `cmp/`.
 
-This will let you write code like `(cmp/sort [1 2 3] (by (desc cmp)))`.
+This will let you write code like `(cmp/sorted [{:x 1} {:x 2}] (by :x desc))`.
 
 ```janet
 (then & comparators)
