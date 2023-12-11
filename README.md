@@ -29,10 +29,12 @@ Returns a comparator that inverts the other comparator. Janet's default `cmp` so
 If you pass one argument to `(desc)`, it will assume it's a comparator, and return a reversed version of that comparator. If you pass two arguments to `desc`, it will act as a comparator in its own right that reverses Janet's native `cmp`. This allows you to write `(by :x desc)` instead of `(by :x (desc cmp))` or `(desc (by :x))`.
 
 ```janet
-(list comparator)
+(each comparator)
 ```
 
-Lifts a comparator to a comparator over. Note that Janet's built-in `cmp` already works over lists, but this is useful for lifting a custom comparator, e.g. `(list (by :x))`.
+Lifts a comparator into a comparator over iterable values -- tuples, arrays, custom abstract types -- by comparing each element in turn until it finds a mismatch. If one iterable is a prefix of the other (according to the given comparator), the shorter iterable is ordered before the longer iterable.
+
+Note that Janet's built-in `cmp` already works over tuples and arrays, but this is useful for lifting a custom comparator, e.g. `(cmp/each (by :x))`, or for comparing heterogeneous types -- Janet's built-in `cmp` will sort all arrays before all tuples, for example, and does not work with fibers or abstract types.
 
 ```janet
 (sort list & comparators)
